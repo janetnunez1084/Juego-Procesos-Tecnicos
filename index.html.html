@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Misión: Procesos Técnicos</title>
+<style>
+:root{--ink:#17233d;--blue:#3457d5;--mint:#d9f7e9;--gold:#ffcf5a;--pink:#ffe0e6;--paper:#f5f7ff}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:linear-gradient(135deg,#e8efff,#fff5dd);min-height:100vh}
+.wrap{max-width:980px;margin:auto;padding:20px}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{background:#fff;padding:9px 14px;border-radius:999px;font-weight:800;box-shadow:0 4px 14px #17233d12}
+h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.05;margin:16px 0 8px}h2{margin-top:0}.subtitle{font-size:1.1rem;max-width:720px}
+.card{background:#fff;border:2px solid #e5eaff;border-radius:24px;padding:clamp(18px,4vw,30px);box-shadow:0 12px 32px #243b7314;margin-top:18px}
+.hero{background:linear-gradient(135deg,#fff,#f1f4ff)}.emoji{font-size:2.6rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:18px 0}
+button,.choice{border:0;border-radius:15px;padding:14px 16px;font:inherit;font-weight:750;cursor:pointer;transition:transform .12s,box-shadow .12s}
+button:hover,.choice:hover{transform:translateY(-2px);box-shadow:0 6px 16px #17233d1b}
+.primary{background:var(--blue);color:white}.secondary{background:#edf0ff;color:var(--ink)}.choice{background:#f5f7ff;border:2px solid #e0e6ff;text-align:left;width:100%;color:var(--ink)}.choice:focus,button:focus{outline:3px solid #ffcf5a;outline-offset:2px}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:18px 0}
+.feedback{padding:14px 16px;border-radius:14px;font-weight:650;margin:12px 0}.good{background:var(--mint)}.bad{background:var(--pink)}
+.progress{height:12px;background:#e8ebf7;border-radius:99px;overflow:hidden;margin:14px 0}.bar{height:100%;width:0;background:linear-gradient(90deg,#3457d5,#43bd91);transition:width .3s}
+.small{font-size:.92rem;color:#52607c}.pill{display:inline-block;padding:6px 10px;border-radius:99px;background:#fff0c2;font-weight:800;font-size:.85rem}
+.hidden{display:none!important}.footer{text-align:center;padding:22px;color:#52607c;font-size:.9rem}.steps li{margin:8px 0}.scorebig{font-size:3rem;font-weight:900;color:var(--blue)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><div class="badge">🧰 TECNOLOGÍA · 2.º DE SECUNDARIA</div><div class="badge">⭐ Puntos: <span id="score">0</span></div></div>
+  <section id="start" class="card hero">
+    <div class="emoji">🏭 🌱 🛠️</div>
+    <h1>¡Misión: Procesos Técnicos!</h1>
+    <p class="subtitle">Conviértete en detective de la tecnología. Resuelve retos para descubrir cómo las personas transforman materiales, utilizan herramientas y organizan actividades para satisfacer necesidades.</p>
+    <div class="grid">
+      <div class="card"><div class="emoji">🔎</div><b>5 misiones</b><p class="small">Necesidades, elementos, etapas y tipos de procesos.</p></div>
+      <div class="card"><div class="emoji">🎯</div><b>10 retos</b><p class="small">Elige respuestas, recibe retroalimentación y suma puntos.</p></div>
+      <div class="card"><div class="emoji">🏆</div><b>Rango final</b><p class="small">¡Descubre si eres aprendiz, técnico o experto!</p></div>
+    </div>
+    <p><label for="player"><b>Nombre o apodo (opcional):</b></label><br><input id="player" maxlength="24" placeholder="Ej. Equipo Tornillo" style="font:inherit;padding:12px;border:2px solid #dfe5ff;border-radius:12px;width:min(100%,360px);margin-top:7px"></p>
+    <button class="primary" onclick="begin()">🚀 Comenzar misión</button>
+    <p class="small">Consejo: lee cada situación y piensa qué necesidad se resuelve, quién participa y qué recursos se utilizan.</p>
+  </section>
+
+  <section id="game" class="card hidden">
+    <div class="top"><span class="pill" id="levelLabel">MISIÓN 1</span><span class="small" id="count">Reto 1 de 10</span></div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <h2 id="question"></h2>
+    <p id="scenario" class="subtitle"></p>
+    <div id="choices" class="choices"></div>
+    <div id="feedback" class="feedback hidden" aria-live="polite"></div>
+    <button id="next" class="primary hidden" onclick="nextQuestion()">Siguiente reto ➜</button>
+  </section>
+
+  <section id="end" class="card hidden">
+    <div class="emoji">🏆</div><h1>¡Misión completada!</h1>
+    <p id="greeting" class="subtitle"></p>
+    <div class="scorebig"><span id="finalScore">0</span>/100</div>
+    <h2 id="rank"></h2>
+    <p id="summary"></p>
+    <div class="card" style="background:#f7f8ff">
+      <h2>🧠 Lo que aprendiste</h2>
+      <ul class="steps">
+        <li>Un <b>proceso técnico</b> es un conjunto organizado de acciones para transformar materiales o realizar un servicio y resolver una necesidad.</li>
+        <li>En él pueden intervenir <b>personas, conocimientos, máquinas, herramientas, materiales, energía y tiempo</b>.</li>
+        <li>Las etapas suelen incluir identificar la necesidad, planear, conseguir recursos, realizar el trabajo y revisar el resultado.</li>
+        <li>Un proceso puede ser artesanal, agrícola, industrial, automatizado o de servicios. Algunos procesos pueden combinar características.</li>
+      </ul>
+    </div>
+    <button class="primary" onclick="restart()">🔁 Jugar otra vez</button>
+    <button class="secondary" onclick="window.print()">🖨️ Imprimir resultado</button>
+  </section>
+  <div class="footer">Juego educativo creado para practicar Tecnología · No requiere conexión a internet después de descargar el archivo.</div>
+</div>
+<script>
+const qs=[
+{level:"Misión 1 · Necesidades",q:"1. La escuela necesita bancas para que los alumnos puedan sentarse. ¿Cuál es la necesidad que se quiere resolver?",s:"Antes de comenzar un proceso técnico, conviene reconocer qué problema se necesita atender.",a:["Decorar el taller","Contar con lugares para sentarse","Comprar herramientas porque sí","Usar más electricidad"],c:1,e:"¡Correcto! La necesidad es contar con lugares para sentarse. Un proceso técnico comienza al identificar qué se necesita resolver."},
+{level:"Misión 1 · Necesidades",q:"2. ¿Cuál sería un buen primer paso para fabricar las bancas?",s:"El equipo ya sabe qué necesita la escuela. ¿Qué debe hacer antes de cortar materiales?",a:["Pintarlas sin medir","Regalar las piezas","Planear el diseño y calcular los materiales","Encender todas las máquinas"],c:2,e:"¡Bien! Planear ayuda a definir el diseño, las medidas, los materiales, las herramientas y las tareas."},
+{level:"Misión 2 · Elementos",q:"3. ¿Cuál de estos grupos contiene principalmente materiales para fabricar una mesa de madera?",s:"Selecciona los recursos que se transforman durante el trabajo.",a:["Madera, tornillos y pintura","Martillo, regla y serrucho","Carpintero, cliente y vendedor","Taller, horario y música"],c:0,e:"Exacto. La madera, los tornillos y la pintura son materiales que se utilizan para obtener el producto."},
+{level:"Misión 2 · Elementos",q:"4. ¿Cuál es un ejemplo de herramienta?",s:"Las herramientas ayudan a realizar tareas específicas.",a:["Una tabla de madera","Un martillo","Un cliente","La necesidad de sentarse"],c:1,e:"Correcto. El martillo es una herramienta; la madera es material y el cliente es una persona que recibe el producto o servicio."},
+{level:"Misión 3 · Etapas",q:"5. Ordena mentalmente la fabricación de una maceta de barro. ¿Qué debe hacerse primero?",s:"Piensa en una secuencia lógica de trabajo.",a:["Revisar si quedó bien","Entregarla al cliente","Preparar el barro y dar forma a la maceta","Empacarla antes de hacerla"],c:2,e:"¡Correcto! Primero se prepara el material y se da forma. Después se deja secar, se cuece cuando corresponde y se revisa."},
+{level:"Misión 3 · Etapas",q:"6. ¿Para qué sirve revisar el producto al terminar?",s:"La revisión forma parte del control del proceso.",a:["Para comprobar calidad y detectar problemas","Para desperdiciar materiales","Para evitar planear","Para cambiar la necesidad original"],c:0,e:"Así es. Revisar permite comprobar si el resultado es útil, seguro y cumple con lo que se necesitaba."},
+{level:"Misión 4 · Tipos",q:"7. Una persona elabora piezas de cerámica a mano, una por una. ¿Qué tipo de proceso predomina?",s:"Observa cómo se realiza el trabajo y qué tanto depende de la destreza manual.",a:["Agrícola","Artesanal","Automatizado","De servicios"],c:1,e:"Correcto. En un proceso artesanal suele tener mucha importancia el trabajo manual y la habilidad de quien elabora el producto."},
+{level:"Misión 4 · Tipos",q:"8. En una parcela se prepara la tierra, se siembra y se cosecha maíz. ¿Qué proceso es?",s:"Identifica la actividad principal.",a:["Industrial","De servicios","Agrícola","Artesanal"],c:2,e:"¡Correcto! Es agrícola porque se relaciona con el cultivo de la tierra y la producción de plantas."},
+{level:"Misión 5 · Producción y servicios",q:"9. Una fábrica produce miles de envases con una línea de producción. ¿Qué tipo predomina?",s:"Se fabrican grandes cantidades mediante operaciones organizadas.",a:["Industrial","Artesanal únicamente","Agrícola","Servicio médico"],c:0,e:"Exacto. Es un proceso industrial por la producción organizada de numerosos productos."},
+{level:"Misión 5 · Producción y servicios",q:"10. Un sistema controla sensores y envasa botellas con poca intervención manual constante. ¿Qué característica destaca?",s:"Las máquinas realizan y controlan tareas de forma programada.",a:["Proceso agrícola","Proceso automatizado","Proceso artesanal","Proceso de atención personal"],c:1,e:"¡Muy bien! La automatización permite que sistemas y máquinas ejecuten tareas de acuerdo con controles o programas. Un proceso automatizado también puede ser industrial."}
+];
+let index=0,score=0,answered=false,playerName="";
+function begin(){playerName=document.getElementById("player").value.trim();document.getElementById("start").classList.add("hidden");document.getElementById("game").classList.remove("hidden");render()}
+function render(){answered=false;let x=qs[index];document.getElementById("levelLabel").textContent=x.level;document.getElementById("count").textContent=`Reto ${index+1} de ${qs.length}`;document.getElementById("bar").style.width=`${index/qs.length*100}%`;document.getElementById("question").textContent=x.q;document.getElementById("scenario").textContent=x.s;document.getElementById("feedback").className="feedback hidden";document.getElementById("next").classList.add("hidden");let box=document.getElementById("choices");box.innerHTML="";x.a.forEach((t,i)=>{let b=document.createElement("button");b.className="choice";b.textContent=String.fromCharCode(65+i)+". "+t;b.onclick=()=>choose(i,b);box.appendChild(b)});}
+function choose(i,btn){if(answered)return;answered=true;let x=qs[index],ok=i===x.c;if(ok)score+=10;document.getElementById("score").textContent=score;[...document.querySelectorAll(".choice")].forEach((b,j)=>{b.disabled=true;if(j===x.c)b.style.borderColor="#35a879";if(j===i&&!ok)b.style.borderColor="#e56a83"});let f=document.getElementById("feedback");f.className="feedback "+(ok?"good":"bad");f.textContent=(ok?"✅ ¡Respuesta correcta! ":"💡 No exactamente. La respuesta correcta es: "+x.a[x.c]+". ")+x.e;document.getElementById("next").classList.remove("hidden");document.getElementById("next").textContent=index===qs.length-1?"Ver resultado 🏆":"Siguiente reto ➜";}
+function nextQuestion(){index++;if(index>=qs.length){finish();return}render()}
+function finish(){document.getElementById("game").classList.add("hidden");document.getElementById("end").classList.remove("hidden");document.getElementById("bar").style.width="100%";document.getElementById("finalScore").textContent=score;document.getElementById("greeting").textContent=(playerName?`¡Buen trabajo, ${playerName}! `:"¡Buen trabajo! ")+"Has terminado los 10 retos.";document.getElementById("rank").textContent=score>=90?"🌟 Experto en procesos técnicos":score>=70?"🛠️ Técnico en formación":"🔎 Aprendiz de detective tecnológico";document.getElementById("summary").textContent=score>=80?"¡Excelente! Identificas muy bien los elementos y tipos de procesos técnicos.": "¡Sigue practicando! Repasa la retroalimentación y vuelve a jugar para mejorar tu puntuación."}
+function restart(){index=0;score=0;document.getElementById("score").textContent="0";document.getElementById("end").classList.add("hidden");document.getElementById("game").classList.remove("hidden");render()}
+</script>
+</body></html>
